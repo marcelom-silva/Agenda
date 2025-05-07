@@ -1,5 +1,5 @@
 "use client"
-import Kanban from "./components/kanban";
+import Kanban from "./components/Kanban";
 
 export default function HomePage() {
   return (
