@@ -1,12 +1,12 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
-// Import adapter and database client if you are using a database for sessions/users
-// import { PrismaAdapter } from "@next-auth/prisma-adapter";
-// import prisma from "@/lib/db"; // Assuming prisma client is in lib/db.ts
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import prisma from "@/lib/db"; // Ajuste o caminho se o seu prisma client estiver em outro lugar
 
+// Defina suas authOptions aqui
 export const authOptions = {
-  // adapter: PrismaAdapter(prisma), // Uncomment if using Prisma Adapter
+  adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
@@ -16,30 +16,22 @@ export const authOptions = {
       clientId: process.env.GITHUB_CLIENT_ID as string,
       clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
     }),
-    // ...add more providers here
+    // ...outros provedores se houver
   ],
-  // secret: process.env.NEXTAUTH_SECRET, // Recommended for production
-  // pages: { // Optional: customize sign-in, sign-out, error pages
-  //   signIn: "/auth/signin",
-  // },
-  // callbacks: { // Optional: customize session, jwt, redirect callbacks
-  //   async session({ session, token, user }) {
-  //     // Send properties to the client, like an access_token and user id from a provider.
-  //     session.accessToken = token.accessToken;
-  //     session.user.id = token.id;
-  //     return session;
-  //   },
-  //   async jwt({ token, user, account, profile, isNewUser }) {
-  //     if (account) {
-  //       token.accessToken = account.access_token;
-  //       token.id = user?.id; // or profile.id depending on provider
-  //     }
-  //     return token;
-  //   },
-  // },
+  // callbacks, pages, secret, etc., conforme necessário
+  secret: process.env.NEXTAUTH_SECRET,
+  // Adicione callbacks se precisar lidar com o ID do usuário na sessão
+  callbacks: {
+    async session({ session, user }: any) {
+      if (session.user) {
+        session.user.id = user.id; // Adiciona o ID do usuário à sessão
+      }
+      return session;
+    },
+  },
 };
 
+// Exporte os manipuladores GET e POST
 const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
-
