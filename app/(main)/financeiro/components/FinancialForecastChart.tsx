@@ -43,4 +43,3 @@ const FinancialForecastChart: React.FC<FinancialForecastChartProps> = ({ data = 
 };
 
 export default FinancialForecastChart;
-
