@@ -1,5 +1,7 @@
+// app/layout.tsx
 import type { Metadata } from "next";
 import "./globals.css";
+import Providers from "./providers"; // Importando o novo componente Providers
 
 export const metadata: Metadata = {
   title: "Agenda Pocket Planner",
@@ -13,7 +15,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR">
-      <body>{children}</body>
+      <body>
+        <Providers>{children}</Providers> {/* Envolvendo children com Providers */}
+      </body>
     </html>
   );
 }
