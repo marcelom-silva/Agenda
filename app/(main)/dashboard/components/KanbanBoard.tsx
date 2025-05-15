@@ -154,8 +154,7 @@ const KanbanBoard: React.FC = () => {
         <h1>Quadro Kanban</h1>
         <button 
           onClick={() => handleOpenTaskForm()} 
-          style={{ padding: '10px 20px
-olor: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}
+          style={{ padding: '10px 20px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}
         >
           Nova Tarefa
         </button>
