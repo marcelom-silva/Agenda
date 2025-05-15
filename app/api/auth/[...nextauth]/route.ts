@@ -6,7 +6,7 @@ import prisma from "@/lib/db"; // Certifique-se que este caminho está correto p
 
 console.log("[NextAuth] Rota de autenticação carregada.");
 
-export const authOptions: NextAuthOptions = {
+const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
