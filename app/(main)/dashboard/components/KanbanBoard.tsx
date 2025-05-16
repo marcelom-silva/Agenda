@@ -138,7 +138,7 @@ const KanbanBoard: React.FC = () => {
     }
   };
 
-  const columns: { id: keyof TasksByStatus; title: string }[] = [
+  const columns: { id: string; title: string }[] = [
     { id: 'todo', title: 'A Fazer' },
     { id: 'doing', title: 'Fazendo' },
     { id: 'done', title: 'Feito' },

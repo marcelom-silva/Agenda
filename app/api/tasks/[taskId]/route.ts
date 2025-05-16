@@ -1,8 +1,8 @@
 // app/api/tasks/[taskId]/route.ts
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route"; // Ajuste o caminho se necessário
-import prisma from "@/lib/db";
+import { authOptions } from "@/lib/authOptions"; // Importação com caminho absoluto
+import { prisma } from "@/lib/db"; // Importação com caminho absoluto corrigida
 
 interface Params {
   params: { taskId: string };

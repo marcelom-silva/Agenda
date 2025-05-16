@@ -1,8 +1,8 @@
 // app/api/save-subscription/route.ts
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route"; // Adjust path if necessary
-import prisma from "@/lib/db";
+import { authOptions } from "@/lib/authOptions"; // Importação com caminho absoluto
+import { prisma } from "@/lib/db"; // Importação com caminho absoluto corrigida
 
 // POST: Salvar a inscrição push do usuário
 export async function POST(request: Request) {

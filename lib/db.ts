@@ -6,11 +6,9 @@ declare global {
   var prisma: PrismaClient | undefined;
 }
 
-const prisma = global.prisma || new PrismaClient();
+export const prisma = global.prisma || new PrismaClient({
+  // log: ["query"], // Uncomment to see SQL queries in the console
+});
 
-if (process.env.NODE_ENV !== "production") {
-  global.prisma = prisma;
-}
-
-export default prisma;
+if (process.env.NODE_ENV !== "production") global.prisma = prisma;
 
