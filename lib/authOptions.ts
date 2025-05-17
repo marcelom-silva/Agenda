@@ -17,6 +17,14 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code",
+          scope: "openid email profile"
+        }
+      },
       profile(profile) {
         console.log("[NextAuth Google Profile] Perfil recebido do Google:", JSON.stringify(profile, null, 2));
         console.log("[NextAuth Google Profile Debug] Tipo de profile.sub:", typeof profile.sub);
