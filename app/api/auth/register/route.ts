@@ -1,6 +1,6 @@
 // app/api/auth/register/route.ts
 import { NextResponse } from 'next/server';
-import { hash } from 'bcrypt';
+import { hash } from 'bcryptjs'; // Usando bcryptjs em vez de bcrypt
 import { prisma } from '@/lib/db';
 
 export async function POST(request: Request) {
