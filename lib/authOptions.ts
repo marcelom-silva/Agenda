@@ -179,11 +179,7 @@ export const authOptions: NextAuthOptions = {
     async linkAccount(message) {
       console.log("[NextAuth Event - linkAccount] ===== EVENTO DE LINK ACCOUNT =====");
       console.log("[NextAuth Event - linkAccount] Conta vinculada via adapter:", JSON.stringify(message, null, 2));
-    },
-    async error(message) {
-      console.error("[NextAuth Event - ERROR] ===== EVENTO DE ERRO =====");
-      console.error("[NextAuth Event - ERROR] Erro durante autenticação:", JSON.stringify(message, null, 2));
-    },
+    }
   },
   debug: true, // Habilitando modo de depuração independente do ambiente
   logger: {
