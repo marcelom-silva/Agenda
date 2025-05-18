@@ -5,7 +5,7 @@ import GitHubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "@/lib/db";
-import { compare } from "bcrypt";
+import { compare } from "bcryptjs";
 
 console.log("[AuthOptions] Definindo authOptions...");
 console.log("[AuthOptions Debug] NEXTAUTH_URL:", process.env.NEXTAUTH_URL);

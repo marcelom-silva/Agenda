@@ -16,7 +16,7 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
-  password      String?   // Campo adicionado para armazenar hash de senha
+  password      String?   // Campo adicionado para autenticação por email/senha
   accounts      Account[]
   sessions      Session[]
   tasks         Task[]
