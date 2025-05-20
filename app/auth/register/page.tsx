@@ -161,11 +161,11 @@ export default function RegisterPage() {
       </div>
       
       {/* Rodapé */}
-      <footer className="w-full bg-gray-800 border-t border-gray-700 p-4">
+      <footer className="w-full bg-gray-800 border-t border-gray-700 py-2">
         <div className="container mx-auto flex justify-center items-center">
-          <div className="flex items-center space-x-2 text-sm text-gray-400">
+          <div className="flex items-center space-x-1 text-xs text-gray-400">
             <span>Feito por Manus e</span>
-            <div className="relative h-6 w-16">
+            <div className="relative h-4 w-12">
               <Image 
                 src="/images/i9vest-Logo.png"
                 alt="i9vest Logo"
