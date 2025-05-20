@@ -51,20 +51,20 @@ export async function POST(request: Request) {
         },
         { status: 201 }
       );
-    } catch (createError) {
-      console.error('Erro específico ao criar usuário:', createError);
+    } catch (error: unknown) {
+      console.error('Erro específico ao criar usuário:', error);
       
       // Verificar se é um erro relacionado ao schema
-      if (createError.message && createError.message.includes('password')) {
+      if (error instanceof Error && error.message.includes('password')) {
         return NextResponse.json(
           { message: 'Erro no schema do banco de dados. Verifique se o campo password está definido no modelo User.' },
           { status: 500 }
         );
       }
       
-      throw createError; // Propagar para o catch externo
+      throw error; // Propagar para o catch externo
     }
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Erro ao registrar usuário:', error);
     
     // Mensagem de erro mais detalhada
