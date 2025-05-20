@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import AuthHeader from '../components/AuthHeader';
 
 export default function RegisterPage() {
@@ -45,9 +46,8 @@ export default function RegisterPage() {
         }),
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
+        const data = await response.json();
         throw new Error(data.message || 'Erro ao registrar usuário');
       }
 
@@ -61,91 +61,121 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-900 p-4">
-      <div className="w-full max-w-md rounded-lg bg-gray-800 p-8 shadow-lg border border-gray-700">
-        <AuthHeader title="Criar Conta" />
-        
-        {error && (
-          <div className="mb-4 rounded-md bg-red-900/30 p-4 text-sm text-red-300 border border-red-800">
-            {error}
-          </div>
-        )}
-        
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-300">
-              Nome
-            </label>
-            <input
-              id="name"
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              className="mt-1 block w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-white shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-            />
+    <div className="min-h-screen flex flex-col bg-gray-900">
+      {/* Conteúdo principal centralizado */}
+      <div className="flex-grow flex items-center justify-center p-4">
+        <div className="w-full max-w-md bg-gray-800 rounded-xl shadow-2xl border border-gray-700 overflow-hidden">
+          {/* Cabeçalho */}
+          <div className="p-6 pb-0">
+            <AuthHeader title="Criar Conta" />
           </div>
           
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-300">
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="mt-1 block w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-white shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-            />
+          {/* Formulário */}
+          <div className="p-6 pt-2">
+            {error && (
+              <div className="mb-4 rounded-md bg-red-900/30 p-4 text-sm text-red-200 border border-red-800">
+                {error}
+              </div>
+            )}
+            
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-1">
+                  Nome
+                </label>
+                <input
+                  id="name"
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  className="w-full rounded-md border border-gray-600 bg-gray-700 px-4 py-2.5 text-white shadow-sm focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-colors"
+                  placeholder="Seu nome completo"
+                />
+              </div>
+              
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">
+                  Email
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="w-full rounded-md border border-gray-600 bg-gray-700 px-4 py-2.5 text-white shadow-sm focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-colors"
+                  placeholder="seu@email.com"
+                />
+              </div>
+              
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-1">
+                  Senha
+                </label>
+                <input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="w-full rounded-md border border-gray-600 bg-gray-700 px-4 py-2.5 text-white shadow-sm focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-colors"
+                  placeholder="Mínimo 6 caracteres"
+                />
+              </div>
+              
+              <div>
+                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-300 mb-1">
+                  Confirmar Senha
+                </label>
+                <input
+                  id="confirmPassword"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  className="w-full rounded-md border border-gray-600 bg-gray-700 px-4 py-2.5 text-white shadow-sm focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-colors"
+                  placeholder="Digite a senha novamente"
+                />
+              </div>
+              
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full rounded-md bg-blue-600 px-4 py-2.5 text-white font-medium hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 disabled:opacity-50 transition-colors"
+              >
+                {loading ? 'Registrando...' : 'Registrar'}
+              </button>
+            </form>
+            
+            <div className="mt-6 text-center text-sm">
+              <p className="text-gray-400">
+                Já tem uma conta?{' '}
+                <Link href="/auth/login" className="font-medium text-blue-400 hover:text-blue-300 transition-colors">
+                  Faça login
+                </Link>
+              </p>
+            </div>
           </div>
-          
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-300">
-              Senha
-            </label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="mt-1 block w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-white shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-            />
-          </div>
-          
-          <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-300">
-              Confirmar Senha
-            </label>
-            <input
-              id="confirmPassword"
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-              className="mt-1 block w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-white shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-            />
-          </div>
-          
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
-          >
-            {loading ? 'Registrando...' : 'Registrar'}
-          </button>
-        </form>
-        
-        <div className="mt-6 text-center text-sm">
-          <p className="text-gray-400">
-            Já tem uma conta?{' '}
-            <Link href="/auth/login" className="font-medium text-blue-400 hover:text-blue-300">
-              Faça login
-            </Link>
-          </p>
         </div>
       </div>
+      
+      {/* Rodapé */}
+      <footer className="w-full bg-gray-800 border-t border-gray-700 p-4">
+        <div className="container mx-auto flex justify-center items-center">
+          <div className="flex items-center space-x-2 text-sm text-gray-400">
+            <span>Feito por Manus e</span>
+            <div className="relative h-6 w-16">
+              <Image 
+                src="/images/i9vest-Logo.png"
+                alt="i9vest Logo"
+                fill
+                style={{ objectFit: 'contain' }}
+              />
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

@@ -31,29 +31,49 @@ export async function POST(request: Request) {
     // Hash da senha
     const hashedPassword = await hash(password, 10);
 
-    // Criar o usuário
-    const user = await prisma.user.create({
-      data: {
-        name,
-        email,
-        password: hashedPassword,
-      },
-    });
+    try {
+      // Criar o usuário com tratamento de erro específico
+      const user = await prisma.user.create({
+        data: {
+          name,
+          email,
+          password: hashedPassword,
+        },
+      });
 
-    // Retornar o usuário criado (sem a senha)
-    const { password: _, ...userWithoutPassword } = user;
-    
-    return NextResponse.json(
-      { 
-        message: 'Usuário registrado com sucesso',
-        user: userWithoutPassword
-      },
-      { status: 201 }
-    );
+      // Retornar o usuário criado (sem a senha)
+      const { password: _, ...userWithoutPassword } = user;
+      
+      return NextResponse.json(
+        { 
+          message: 'Usuário registrado com sucesso',
+          user: userWithoutPassword
+        },
+        { status: 201 }
+      );
+    } catch (createError) {
+      console.error('Erro específico ao criar usuário:', createError);
+      
+      // Verificar se é um erro relacionado ao schema
+      if (createError.message && createError.message.includes('password')) {
+        return NextResponse.json(
+          { message: 'Erro no schema do banco de dados. Verifique se o campo password está definido no modelo User.' },
+          { status: 500 }
+        );
+      }
+      
+      throw createError; // Propagar para o catch externo
+    }
   } catch (error) {
     console.error('Erro ao registrar usuário:', error);
+    
+    // Mensagem de erro mais detalhada
+    const errorMessage = error instanceof Error 
+      ? `Erro ao registrar usuário: ${error.message}` 
+      : 'Erro desconhecido ao registrar usuário';
+    
     return NextResponse.json(
-      { message: 'Erro ao registrar usuário' },
+      { message: errorMessage },
       { status: 500 }
     );
   }
