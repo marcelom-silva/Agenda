@@ -62,6 +62,20 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-900">
+      {/* Banner horizontal no topo */}
+      <div className="w-full bg-gray-900 flex justify-center">
+        <div className="w-full max-w-5xl relative h-32 sm:h-40 md:h-48 overflow-hidden">
+          <Image 
+            src="/images/pocketplanner_header_banner_full.png"
+            alt="PocketPlanner"
+            fill
+            style={{ objectFit: 'cover', objectPosition: 'center' }}
+            priority
+            className="rounded-lg"
+          />
+        </div>
+      </div>
+      
       {/* Conteúdo principal centralizado */}
       <div className="flex-grow flex items-center justify-center p-4">
         <div className="w-full max-w-md bg-gray-800 rounded-xl shadow-2xl border border-gray-700 overflow-hidden">
@@ -160,12 +174,12 @@ export default function RegisterPage() {
         </div>
       </div>
       
-      {/* Rodapé */}
-      <footer className="w-full bg-gray-800 border-t border-gray-700 py-2">
+      {/* Rodapé fixo na base */}
+      <footer className="w-full bg-gray-800 border-t border-gray-700 py-2 mt-auto">
         <div className="container mx-auto flex justify-center items-center">
           <div className="flex items-center space-x-1 text-xs text-gray-400">
             <span>Feito por Manus e</span>
-            <div className="relative h-4 w-12">
+            <div className="relative h-3 w-8">
               <Image 
                 src="/images/i9vest-Logo.png"
                 alt="i9vest Logo"
