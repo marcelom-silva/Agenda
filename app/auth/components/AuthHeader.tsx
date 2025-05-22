@@ -1,38 +1,17 @@
 'use client';
 
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
 
 interface AuthHeaderProps {
-  title?: string;
+  title: string;
+  subtitle?: string;
 }
 
-export default function AuthHeader({ title }: AuthHeaderProps) {
-  const [mounted, setMounted] = useState(false);
-
-  // Evita problemas de hidratação com SSR
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
-    return null;
-  }
-
+export default function AuthHeader({ title, subtitle = 'Organize suas tarefas e finanças em um só lugar' }: AuthHeaderProps) {
   return (
-    <div className="w-full flex flex-col items-center mb-6">
-      <div className="w-full max-w-md flex flex-col items-center">
-        {title && (
-          <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">
-            {title}
-          </h2>
-        )}
-        
-        <p className="text-sm text-gray-300 text-center">
-          Organize suas tarefas e finanças em um só lugar
-        </p>
-      </div>
+    <div className="text-center mb-4">
+      <h1 className="text-2xl font-bold text-white mb-1">{title}</h1>
+      <p className="text-gray-400 text-sm">{subtitle}</p>
     </div>
   );
 }
