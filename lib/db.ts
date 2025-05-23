@@ -1,3 +1,4 @@
+// lib/db.ts
 import { PrismaClient } from "@prisma/client";
 
 declare global {
@@ -8,7 +9,18 @@ declare global {
 
 export const prisma = global.prisma || new PrismaClient({
   // log: ["query"], // Uncomment to see SQL queries in the console
+  datasources: {
+    db: {
+      // Forçar a URL de conexão com codificação adequada dos caracteres especiais
+      url: process.env.DATABASE_URL?.replace(
+        /%(?![0-9A-Fa-f]{2})/g,
+        '%25'
+      ).replace(
+        /&(?!amp;|lt;|gt;|quot;|#39;)/g,
+        '%26'
+      )
+    },
+  },
 });
 
 if (process.env.NODE_ENV !== "production") global.prisma = prisma;
-
