@@ -27,7 +27,14 @@ export default function LoginPage() {
       });
 
       if (result?.error) {
-        setError('Email ou senha inválidos');
+        // Verificar se o erro contém informações sobre problemas de conexão
+        if (result.error.toLowerCase().includes('database') || 
+            result.error.toLowerCase().includes('conexão') ||
+            result.error.toLowerCase().includes('servidor')) {
+          setError('Não foi possível conectar ao servidor. Por favor, tente novamente mais tarde.');
+        } else {
+          setError('Email ou senha inválidos');
+        }
         setLoading(false);
         return;
       }
@@ -35,7 +42,7 @@ export default function LoginPage() {
       router.push('/dashboard');
     } catch (error) {
       console.error('Erro ao fazer login:', error);
-      setError('Ocorreu um erro ao fazer login. Tente novamente.');
+      setError('Ocorreu um erro ao fazer login. Tente novamente mais tarde.');
       setLoading(false);
     }
   };

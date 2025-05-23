@@ -6,6 +6,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "@/lib/db";
 import { compare } from "bcryptjs";
+import { PrismaClientInitializationError, PrismaClientKnownRequestError, PrismaClientRustPanicError, PrismaClientUnknownRequestError } from "@prisma/client/runtime/library";
 
 console.log("[AuthOptions] Definindo authOptions...");
 console.log("[AuthOptions Debug] NEXTAUTH_URL:", process.env.NEXTAUTH_URL);
@@ -52,6 +53,21 @@ export const authOptions: NextAuthOptions = {
           };
         } catch (error) {
           console.error("[CredentialsProvider] Erro durante autenticação:", error);
+          
+          // Tratamento específico para erros de conexão com o banco de dados
+          if (
+            error instanceof PrismaClientInitializationError ||
+            error instanceof PrismaClientKnownRequestError ||
+            error instanceof PrismaClientRustPanicError ||
+            error instanceof PrismaClientUnknownRequestError ||
+            (error instanceof Error && error.message.includes("Can't reach database server"))
+          ) {
+            console.error("[CredentialsProvider] Erro de conexão com o banco de dados:", error);
+            // Retornando null para que o NextAuth trate como erro de autenticação
+            // O frontend irá exibir a mensagem de erro genérica
+            return null;
+          }
+          
           return null;
         }
       }
@@ -71,6 +87,7 @@ export const authOptions: NextAuthOptions = {
   },
   pages: {
     signIn: "/auth/login", // Página personalizada de login
+    error: "/auth/error", // Página personalizada de erro
   },
   callbacks: {
     async session({ session, user }) {
