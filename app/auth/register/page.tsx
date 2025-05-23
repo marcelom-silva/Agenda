@@ -48,6 +48,18 @@ export default function RegisterPage() {
 
       if (!response.ok) {
         const data = await response.json();
+        
+        // Verificar se a mensagem de erro contém indicações de problemas de conexão com o banco
+        if (data.message && (
+            data.message.includes("database server") || 
+            data.message.includes("Can't reach database") ||
+            data.message.includes("prisma") ||
+            data.message.toLowerCase().includes("conexão") ||
+            data.message.toLowerCase().includes("servidor")
+          )) {
+          throw new Error('Não foi possível conectar ao servidor. Por favor, tente novamente mais tarde.');
+        }
+        
         throw new Error(data.message || 'Erro ao registrar usuário');
       }
 
@@ -55,7 +67,20 @@ export default function RegisterPage() {
       router.push('/auth/login?registered=true');
     } catch (error: any) {
       console.error('Erro ao registrar:', error);
-      setError(error.message || 'Ocorreu um erro ao registrar. Tente novamente.');
+      
+      // Verificar se a mensagem de erro contém indicações de problemas de conexão
+      if (error.message && (
+          error.message.includes("database server") || 
+          error.message.includes("Can't reach database") ||
+          error.message.includes("prisma") ||
+          error.message.toLowerCase().includes("conexão") ||
+          error.message.toLowerCase().includes("servidor")
+        )) {
+        setError('Não foi possível conectar ao servidor. Por favor, tente novamente mais tarde.');
+      } else {
+        setError(error.message || 'Ocorreu um erro ao registrar. Tente novamente.');
+      }
+      
       setLoading(false);
     }
   };
@@ -169,7 +194,7 @@ export default function RegisterPage() {
             <div className="mt-6 text-center text-sm">
               <p className="text-gray-400">
                 Já tem uma conta?{' '}
-                <Link href="/auth/login" className="font-medium text-blue-400 hover:text-blue-300 transition-colors">
+                <Link href="/auth/login" className="font-medium text-blue-300 hover:text-blue-200 transition-colors">
                   Faça login
                 </Link>
               </p>
