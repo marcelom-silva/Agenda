@@ -6,7 +6,6 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "@/lib/db";
 import { compare } from "bcryptjs";
-import { PrismaClientInitializationError, PrismaClientKnownRequestError, PrismaClientRustPanicError, PrismaClientUnknownRequestError } from "@prisma/client/runtime/library";
 
 console.log("[AuthOptions] Definindo authOptions...");
 console.log("[AuthOptions Debug] NEXTAUTH_URL:", process.env.NEXTAUTH_URL);
@@ -54,18 +53,9 @@ export const authOptions: NextAuthOptions = {
         } catch (error) {
           console.error("[CredentialsProvider] Erro durante autenticação:", error);
           
-          // Tratamento específico para erros de conexão com o banco de dados
-          if (
-            error instanceof PrismaClientInitializationError ||
-            error instanceof PrismaClientKnownRequestError ||
-            error instanceof PrismaClientRustPanicError ||
-            error instanceof PrismaClientUnknownRequestError ||
-            (error instanceof Error && error.message.includes("Can't reach database server"))
-          ) {
-            console.error("[CredentialsProvider] Erro de conexão com o banco de dados:", error);
-            // Retornando null para que o NextAuth trate como erro de autenticação
-            // O frontend irá exibir a mensagem de erro genérica
-            return null;
+          // Tratamento simplificado de erros para compatibilidade com SQLite
+          if (error instanceof Error) {
+            console.error("[CredentialsProvider] Erro de conexão ou consulta:", error.message);
           }
           
           return null;
@@ -83,23 +73,23 @@ export const authOptions: NextAuthOptions = {
   ],
   secret: process.env.NEXTAUTH_SECRET,
   session: {
-    strategy: "database",
+    strategy: "jwt", // Alterado de "database" para "jwt" para melhor compatibilidade com SQLite
   },
   pages: {
     signIn: "/auth/login", // Página personalizada de login
     error: "/auth/error", // Página personalizada de erro
   },
   callbacks: {
-    async session({ session, user }) {
+    async session({ session, token }) {
       console.log("[NextAuth Callback - session] Gerando sessão");
-      if (user && session.user) {
-        session.user.id = user.id;
+      if (token && session.user) {
+        session.user.id = token.sub as string;
       }
       console.log("[NextAuth Callback - session] Session com user.id:", JSON.stringify(session, null, 2));
       return session;
     },
   },
-  debug: true,
+  debug: process.env.NODE_ENV !== "production",
 };
 
 console.log("[AuthOptions] authOptions definidos e exportados.");
