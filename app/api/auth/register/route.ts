@@ -5,11 +5,14 @@ import { prisma } from '@/lib/db';
 
 export async function POST(request: Request) {
   try {
+    console.log('[REGISTRO DEBUG] Iniciando processo de registro');
     const body = await request.json();
     const { name, email, password } = body;
+    console.log(`[REGISTRO DEBUG] Dados recebidos: nome=${name}, email=${email}, senha=***`);
 
     // Validação básica
     if (!name || !email || !password) {
+      console.log('[REGISTRO DEBUG] Validação falhou: campos obrigatórios ausentes');
       return NextResponse.json(
         { message: 'Nome, email e senha são obrigatórios' },
         { status: 400 }
@@ -17,22 +20,48 @@ export async function POST(request: Request) {
     }
 
     // Verificar se o email já está em uso
-    const existingUser = await prisma.user.findUnique({
-      where: { email }
-    });
+    try {
+      console.log(`[REGISTRO DEBUG] Verificando se email já existe: ${email}`);
+      console.log('[REGISTRO DEBUG] Detalhes do Prisma:', {
+        databaseUrl: process.env.DATABASE_URL || 'não definido',
+        nodeEnv: process.env.NODE_ENV || 'não definido'
+      });
+      
+      const existingUser = await prisma.user.findUnique({
+        where: { email }
+      });
 
-    if (existingUser) {
+      if (existingUser) {
+        console.log('[REGISTRO DEBUG] Email já em uso');
+        return NextResponse.json(
+          { message: 'Este email já está em uso' },
+          { status: 400 }
+        );
+      }
+      console.log('[REGISTRO DEBUG] Email disponível para registro');
+    } catch (dbError) {
+      console.error('[REGISTRO DEBUG] Erro ao verificar usuário existente:', dbError);
+      // Retornar detalhes do erro para depuração em produção
       return NextResponse.json(
-        { message: 'Este email já está em uso' },
-        { status: 400 }
+        { 
+          message: 'Não foi possível verificar o cadastro. Por favor, tente novamente mais tarde.',
+          debug: {
+            errorMessage: dbError instanceof Error ? dbError.message : 'Erro desconhecido',
+            errorStack: dbError instanceof Error ? dbError.stack : 'Stack não disponível',
+            errorType: dbError instanceof Error ? dbError.constructor.name : typeof dbError
+          }
+        },
+        { status: 503 }
       );
     }
 
     // Hash da senha
+    console.log('[REGISTRO DEBUG] Gerando hash da senha');
     const hashedPassword = await hash(password, 10);
 
     try {
       // Criar o usuário com tratamento de erro específico
+      console.log('[REGISTRO DEBUG] Tentando criar usuário no banco de dados');
       const user = await prisma.user.create({
         data: {
           name,
@@ -43,6 +72,7 @@ export async function POST(request: Request) {
 
       // Retornar o usuário criado (sem a senha)
       const { password: _, ...userWithoutPassword } = user;
+      console.log('[REGISTRO DEBUG] Usuário criado com sucesso:', userWithoutPassword);
       
       return NextResponse.json(
         { 
@@ -51,29 +81,35 @@ export async function POST(request: Request) {
         },
         { status: 201 }
       );
-    } catch (error: unknown) {
-      console.error('Erro específico ao criar usuário:', error);
+    } catch (createError) {
+      console.error('[REGISTRO DEBUG] Erro específico ao criar usuário:', createError);
       
-      // Verificar se é um erro relacionado ao schema
-      if (error instanceof Error && error.message.includes('password')) {
-        return NextResponse.json(
-          { message: 'Erro no schema do banco de dados. Verifique se o campo password está definido no modelo User.' },
-          { status: 500 }
-        );
-      }
-      
-      throw error; // Propagar para o catch externo
+      // Retornar detalhes do erro para depuração em produção
+      return NextResponse.json(
+        { 
+          message: 'Não foi possível criar sua conta. Por favor, tente novamente mais tarde.',
+          debug: {
+            errorMessage: createError instanceof Error ? createError.message : 'Erro desconhecido',
+            errorStack: createError instanceof Error ? createError.stack : 'Stack não disponível',
+            errorType: createError instanceof Error ? createError.constructor.name : typeof createError
+          }
+        },
+        { status: 503 }
+      );
     }
-  } catch (error: unknown) {
-    console.error('Erro ao registrar usuário:', error);
+  } catch (error) {
+    console.error('[REGISTRO DEBUG] Erro geral ao registrar usuário:', error);
     
-    // Mensagem de erro mais detalhada
-    const errorMessage = error instanceof Error 
-      ? `Erro ao registrar usuário: ${error.message}` 
-      : 'Erro desconhecido ao registrar usuário';
-    
+    // Retornar detalhes do erro para depuração em produção
     return NextResponse.json(
-      { message: errorMessage },
+      { 
+        message: 'Ocorreu um erro inesperado. Por favor, tente novamente mais tarde.',
+        debug: {
+          errorMessage: error instanceof Error ? error.message : 'Erro desconhecido',
+          errorStack: error instanceof Error ? error.stack : 'Stack não disponível',
+          errorType: error instanceof Error ? error.constructor.name : typeof error
+        }
+      },
       { status: 500 }
     );
   }
