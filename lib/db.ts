@@ -1,4 +1,3 @@
-// lib/db.ts
 import { PrismaClient } from "@prisma/client";
 
 declare global {
@@ -7,20 +6,21 @@ declare global {
   var prisma: PrismaClient | undefined;
 }
 
-export const prisma = global.prisma || new PrismaClient({
-  // log: ["query"], // Uncomment to see SQL queries in the console
-  datasources: {
-    db: {
-      // Forçar a URL de conexão com codificação adequada dos caracteres especiais
-      url: process.env.DATABASE_URL?.replace(
-        /%(?![0-9A-Fa-f]{2})/g,
-        '%25'
-      ).replace(
-        /&(?!amp;|lt;|gt;|quot;|#39;)/g,
-        '%26'
-      )
+// Configuração para garantir que o Prisma funcione em todos os ambientes
+const prismaClientSingleton = () => {
+  // Em produção (Vercel), definimos explicitamente a URL para o SQLite
+  const databaseUrl = process.env.DATABASE_URL || "file:./dev.db";
+  
+  return new PrismaClient({
+    datasources: {
+      db: {
+        url: databaseUrl,
+      },
     },
-  },
-});
+    // log: ["query"], // Uncomment to see SQL queries in the console
+  });
+};
+
+export const prisma = global.prisma || prismaClientSingleton();
 
 if (process.env.NODE_ENV !== "production") global.prisma = prisma;
