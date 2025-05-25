@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/authOptions"; // Importação com caminho absoluto
 import { prisma } from "@/lib/db"; // Importação com caminho absoluto corrigida
-import { Decimal } from "@prisma/client/runtime/library"; // Import Decimal
+// Removida importação do Decimal que não é mais necessária
 
 // GET: Listar entradas financeiras do usuário logado
 export async function GET(request: Request) {
@@ -58,7 +58,7 @@ export async function POST(request: Request) {
     const newFinancialEntry = await prisma.financialEntry.create({
       data: {
         description,
-        amount: new Decimal(amount), // Prisma espera Decimal para campos Decimal
+        amount: parseFloat(amount), // Convertido para Float em vez de Decimal
         type,
         category: category || "Outros", // Default category if not provided
         dueDate: new Date(dueDate),
@@ -78,4 +78,3 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Erro ao criar entrada financeira" }, { status: 500 });
   }
 }
-

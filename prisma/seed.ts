@@ -81,12 +81,16 @@ async function main() {
   await prisma.task.deleteMany({ where: { userId: USER_ID_PLACEHOLDER } });
   console.log(`Tarefas antigas do usuário ${USER_ID_PLACEHOLDER} foram deletadas.`);
 
-  const result = await prisma.task.createMany({
-    data: allTasks,
-    skipDuplicates: true, // Embora deleteMany já previna, é uma segurança extra
-  });
+  // SQLite não suporta createMany, então vamos usar um loop com create
+  let createdCount = 0;
+  for (const task of allTasks) {
+    await prisma.task.create({
+      data: task
+    });
+    createdCount++;
+  }
 
-  console.log(`${result.count} tarefas foram criadas com sucesso para o usuário ${USER_ID_PLACEHOLDER}.`);
+  console.log(`${createdCount} tarefas foram criadas com sucesso para o usuário ${USER_ID_PLACEHOLDER}.`);
   console.log("Script de semeadura concluído.");
 }
 
@@ -112,4 +116,3 @@ main()
 // Se ts-node não estiver global ou no projeto, instale: npm install -D ts-node typescript
 // E então você pode precisar de um comando mais explícito no package.json ou rodar com `node --loader ts-node/esm prisma/seed.ts` para ESM.
 // A forma mais simples é usar o comando que o Prisma sugere na documentação para `prisma db seed`.
-

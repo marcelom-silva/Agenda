@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/authOptions"; // Importação com caminho absoluto
 import { prisma } from "@/lib/db"; // Importação com caminho absoluto corrigida
-import { Decimal } from "@prisma/client/runtime/library"; // Import Decimal
+// Removida importação do Decimal que não é mais necessária
 
 interface Params {
   params: { entryId: string };
@@ -68,7 +68,7 @@ export async function PUT(request: Request, { params }: Params) {
       },
       data: {
         description,
-        amount: amount !== undefined ? new Decimal(amount) : undefined,
+        amount: amount !== undefined ? parseFloat(amount) : undefined, // Convertido para Float
         type,
         category,
         dueDate: dueDate ? new Date(dueDate) : undefined,
@@ -119,4 +119,3 @@ export async function DELETE(request: Request, { params }: Params) {
     return NextResponse.json({ error: "Erro ao excluir entrada financeira" }, { status: 500 });
   }
 }
-
