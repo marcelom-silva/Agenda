@@ -1,15 +1,15 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
-  "/api/auth/register/route": "app/api/auth/register/route.js",
   "/api/financial-entries/[entryId]/route": "app/api/financial-entries/[entryId]/route.js",
-  "/api/financial-entries/route": "app/api/financial-entries/route.js",
-  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
   "/api/save-subscription/route": "app/api/save-subscription/route.js",
-  "/auth/login/page": "app/auth/login/page.js",
-  "/api/tasks/[taskId]/route": "app/api/tasks/[taskId]/route.js",
+  "/api/financial-entries/route": "app/api/financial-entries/route.js",
   "/page": "app/page.js",
-  "/api/tasks/route": "app/api/tasks/route.js",
+  "/api/auth/register/route": "app/api/auth/register/route.js",
+  "/auth/login/page": "app/auth/login/page.js",
+  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
   "/auth/register/page": "app/auth/register/page.js",
-  "/(main)/financeiro/page": "app/(main)/financeiro/page.js",
-  "/(main)/dashboard/page": "app/(main)/dashboard/page.js"
+  "/api/tasks/[taskId]/route": "app/api/tasks/[taskId]/route.js",
+  "/api/tasks/route": "app/api/tasks/route.js",
+  "/(main)/dashboard/page": "app/(main)/dashboard/page.js",
+  "/(main)/financeiro/page": "app/(main)/financeiro/page.js"
 }
